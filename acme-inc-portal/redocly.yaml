@@ -38,37 +38,6 @@ rules:
   metadata-schema:
     $ref: ./@lint/metadata-schema.yaml
 
-# Login identity providers
-sso:
-  basic:
-    title: Basic Auth
-    type: BASIC
-    credentials:
-      - username: admin
-        # echo -n "<your password>" | openssl sha256 -hex
-        passwordHash: 240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9
-        teams:
-          - Admin
-      - username: marketing
-        passwordHash: 7d50137f0395e9a47a5daf16959dd68abef6370d3b837ec3be4fe9d869db46a3
-        teams:
-          - Marketing
-      - username: finance
-        passwordHash: 48f7312924d74358e75294e3b3613f2319d99e944184b69550f528577ca082fb
-        teams:
-          - Finance
-  main:
-    title: Auth0 SSO
-    type: OIDC
-    configurationUrl: https://redocly-staging.us.auth0.com/.well-known/openid-configuration
-    clientId: mPFAMXHpo1GdGiBkBmVWxQIRxW2Q5681
-    clientSecret: '{{ process.env.REDOCLY_IDP_MAIN_CLIENTSECRET }}'
-    teamsClaimName: https://redocly.com/sso/teams
-    scopes:
-      - profile
-      - email
-      - openid
-
 developerOnboarding:
   adapters:
     - type: APIGEE_X
