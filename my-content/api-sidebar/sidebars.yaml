@@ -1,0 +1,13 @@
+- group: CNP API
+  items:
+    - page: cnp-api/@v0.4/index.md
+      label: CNP API @V0.4
+    - page: cnp-api/@v0.4/cnp-api.yaml
+
+    - page: cnp-api/@v5/index.md
+      label: CNP API @V5
+    - page: cnp-api/@v5/cnp-api.yaml
+
+    - page: cnp-api/@v6/index.md
+      label: CNP API @V6
+    - page: cnp-api/@v6/cnp-api.yaml

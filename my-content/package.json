@@ -1,13 +1,15 @@
 {
-  "name": "portal-example",
+  "name": "worldpay-demo",
   "version": "1.0.0",
-  "private": true,
-  "description": "Portal example",
+  "description": "Worldpay Developer Portal",
+  "main": "index.js",
   "scripts": {
     "start": "portal develop",
     "build": "portal build"
   },
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "@redocly/portal": "0.49.0"
+    "@redocly/portal": "0.32.0"
   }
 }

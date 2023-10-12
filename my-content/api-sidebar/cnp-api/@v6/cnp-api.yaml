@@ -1,0 +1,223 @@
+openapi: 3.0.0
+info:
+  title: Payment API
+  description: 
+    The Payment API enables secure and efficient payment processing, allowing users to make payments, retrieve payment details, and process refunds seamlessly. It ensures confidentiality and ease of integration, making it a versatile solution for various payment-related needs.
+  version: 6.0.0
+
+paths:
+  /payments:
+    post:
+      tags:
+        - Payments
+      summary: Process Payment
+      description: Endpoint to process a payment securely.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentRequest'
+      responses:
+        '200':
+          description: Payment processed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentResponse'
+        '400':
+          description: Bad request. Invalid payment details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /payments/{paymentId}:
+    get:
+      tags:
+        - Payments
+      summary: Get Payment Details
+      description: Retrieve details of a specific payment.
+      parameters:
+        - name: paymentId
+          in: path
+          required: true
+          description: The ID of the payment to retrieve.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation. Returns payment details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentDetails'
+        '404':
+          description: Payment not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /payments/refund/{paymentId}:
+    post:
+      tags:
+        - Payments
+      summary: Process Payment Refund
+      description: Endpoint to process a refund for a specific payment.
+      parameters:
+        - name: paymentId
+          in: path
+          required: true
+          description: The ID of the payment to refund.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefundRequest'
+      responses:
+        '200':
+          description: Refund processed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefundResponse'
+        '400':
+          description: Bad request. Invalid refund details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Payment not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    PaymentRequest:
+      type: object
+      properties:
+        amount:
+          type: number
+          description: The payment amount.
+        card_number:
+          type: string
+          description: The credit card number.
+        expiration_date:
+          type: string
+          format: date
+          description: The credit card expiration date.
+        cvv:
+          type: string
+          description: The CVV code of the credit card.
+      required:
+        - amount
+        - card_number
+        - expiration_date
+        - cvv
+
+    PaymentResponse:
+      type: object
+      properties:
+        payment_id:
+          type: string
+          description: The ID of the processed payment.
+        status:
+          type: string
+          description: The status of the payment processing (e.g., "success" or "failure").
+        message:
+          type: string
+          description: A message describing the payment status.
+      required:
+        - payment_id
+        - status
+        - message
+
+    PaymentDetails:
+      type: object
+      properties:
+        payment_id:
+          type: string
+          description: The ID of the payment.
+        amount:
+          type: number
+          description: The payment amount.
+        card_type:
+          type: string
+          description: The type of credit card used (e.g., "Visa", "Mastercard").
+        customer_name:
+          type: string
+          description: The name of the customer.
+        payment_date:
+          type: string
+          format: date-time
+          description: The date and time of the payment.
+      required:
+        - payment_id
+        - amount
+        - card_type
+        - customer_name
+        - payment_date
+
+    RefundRequest:
+      type: object
+      properties:
+        reason:
+          type: string
+          description: The reason for the refund.
+      required:
+        - reason
+
+    RefundResponse:
+      type: object
+      properties:
+        refund_id:
+          type: string
+          description: The ID of the processed refund.
+        status:
+          type: string
+          description: The status of the refund processing (e.g., "success" or "failure").
+        message:
+          type: string
+          description: A message describing the refund status.
+      required:
+        - refund_id
+        - status
+        - message
+
+    Error:
+      type: object
+      properties:
+        error_code:
+          type: string
+          description: A unique error code for the specific error.
+        message:
+          type: string
+          description: A descriptive error message.
+      required:
+        - error_code
+        - message
