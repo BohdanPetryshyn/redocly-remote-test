@@ -1,0 +1,7 @@
+definition: ./activities-api.yaml
+serverUrl: https://api.impossiblemissionsforce.com
+inherit: auto
+flows:
+  flowName_/activities:
+    - path: /activities
+      method: post

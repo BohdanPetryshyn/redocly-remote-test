@@ -1,0 +1,221 @@
+apis:
+  graphql:
+    root: apis/cross-organisational-functions/compliance/compliance-product-graph/api.gql
+    metadata:
+      title: Compliance Product GraphQL
+      description: GraphQL API to support banking products specific to trade finance activities.
+      createdAt: '2023-05-06T00:00:00.000Z'
+      group: Product Segmentation
+      owner: Product Segmentation Team
+      l0: Deposits & Lending
+      l1: Group Lending
+      l2: Collateralisation & Guarantees
+      sd: Bank Guarantee
+      bc: Trade Finance Management
+      bo: Product
+      bd: Trade Banking
+      tags:
+        - draft
+        - active
+        - graphql
+rbac:
+  defaults:
+    anonymous: none
+    authenticated: read
+  apis/corporate/**:
+    # only members of the following teams will have access
+    Admin: read
+    Marketing: read
+
+  apis/cross-organisational-functions/fraud-model/@v1/**:
+    Admin: read
+    Finance: read
+
+  apis/cross-organisational-functions/fraud-model/@v2/**:
+    Admin: read
+    Marketing: read
+rules:
+  metadata-schema:
+    $ref: ./@lint/metadata-schema.yaml
+
+# Login identity providers
+sso:
+  basic:
+    title: Basic Auth
+    type: BASIC
+    credentials:
+      - username: admin
+        # echo -n "<your password>" | openssl sha256 -hex
+        passwordHash: 240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9
+        teams:
+          - Admin
+      - username: marketing
+        passwordHash: 7d50137f0395e9a47a5daf16959dd68abef6370d3b837ec3be4fe9d869db46a3
+        teams:
+          - Marketing
+      - username: finance
+        passwordHash: 48f7312924d74358e75294e3b3613f2319d99e944184b69550f528577ca082fb
+        teams:
+          - Finance
+  main:
+    title: Auth0 SSO
+    type: OIDC
+    configurationUrl: https://redocly-staging.us.auth0.com/.well-known/openid-configuration
+    clientId: mPFAMXHpo1GdGiBkBmVWxQIRxW2Q5681
+    clientSecret: '{{ process.env.REDOCLY_IDP_MAIN_CLIENTSECRET }}'
+    teamsClaimName: https://redocly.com/sso/teams
+    scopes:
+      - profile
+      - email
+      - openid
+
+developerOnboarding:
+  adapters:
+    - type: APIGEE_X
+      organizationName: apigee-eval-15
+      auth:
+        type: SERVICE_ACCOUNT
+        serviceAccountEmail: redocly-apigee@apigee-eval-15.iam.gserviceaccount.com
+        serviceAccountPrivateKey: '{{ process.env.APIGEE_PRIVATE_KEY }}'
+      ignoreApiProducts: []
+      allowApiProductsOutsideCatalog: true
+theme:
+  ## Scorecard
+  scorecard:
+    levels:
+      - name: Baseline
+        extends:
+          - minimal
+        rules:
+          rule/workaround:
+            subject: 
+              type: Info
+              property: description
+            assertions: 
+              defined: true
+            severity: off
+      - name: Silver
+        extends:
+          - recommended
+        rules:
+          rule/workaround:
+            subject: 
+              type: Info
+              property: description
+            assertions: 
+              defined: true
+            severity: off
+      - name: Gold
+        extends:
+          - recommended
+        rules:
+          paths-kebab-case: error
+          no-http-verbs-in-paths: warn
+          rule/workaround:
+            subject: 
+              type: Info
+              property: description
+            assertions: 
+              defined: true
+            severity: off
+    targets:
+      - where:
+          metadata: # key value matching from x-metadata, accepts match, pattern, or ISO date-range
+            createdAt: '2023-01-01/'
+        minimumLevel: Gold
+      - where:
+          metadata: # key value matching from x-metadata, accepts match, pattern, or ISO date-range
+            createdAt: '2019-01-01/2023-01-01'
+        minimumLevel: Silver
+  ## Catalog
+  catalog:
+    main:
+      title: API Catalog
+      description: 'This is a description of the API Catalog'
+      slug: /catalog/
+      filters:
+        - title: Capability Group
+          property: l0
+          missingCategoryName: Other
+          type: select # checkboxes
+        - title: Business Capability
+          property: l1
+          parentFilter: l0
+          missingCategoryName: Other
+        - title: Service Domain
+          property: sd
+          parentFilter: l0
+          missingCategoryName: Other
+          type: checkboxes
+        - title: API Stage
+          property: tags
+          options: [beta, draft, stable]
+          type: checkboxes
+        - title: API Status
+          property: tags
+          options: [deprecated, active]
+          type: checkboxes
+        - title: API Type
+          property: tags
+          options: [graphql]
+      # separateVersions: true
+      groupByFirstFilter: true
+      items:
+        - directory: ./apis
+          flatten: true
+          includeByMetadata:
+            type: [openapi, graphql]
+
+  ## OpenAPI Settings
+  openapi:
+    pagination: item
+    generateCodeSamples: 
+      languages: 
+        - lang: curl
+        - lang: C#
+        - lang: PHP
+        - lang: Java
+        - lang: Python
+        - lang: Node.js
+  seo:
+    title: Acme Inc
+  logo:
+    image: ./images/logo.png
+    link: /
+  navbar:
+    items:
+      - label: Home
+        page: index.page.tsx
+      - label: Browse APIs
+        page: /catalog/
+      - label: API scorecard
+        page: /catalog/scorecard/
+      - label: My Apps
+        page: /apps/
+  footer:
+    copyrightText: Copyright © Redocly 2019-2022. All right reserved.
+    items:
+      - group: Legal
+        items:
+          - label: Terms of Use
+            href: 'https://redocly.com/subscription-agreement/'
+          - label: Privacy Notice
+            href: 'https://redocly.com/privacy-policy/'
+          - label: Cookie Notice
+            href: 'https://redocly.com/privacy-policy/'
+      - group: Support
+        items:
+          - label: FAQ
+            page: faq.md
+          - label: Contact Us
+            page: contact.page.tsx
+      - group: Social
+        items:
+          - label: Facebook
+            href: 'https://www.facebook.com/redocly/'
+          - label: Youtube
+            href: 'https://www.youtube.com/channel/UCxYbPjnpqmHCmwg9iWf7wtQ'
+          - label: Twitter
+            href: 'https://twitter.com/Redocly'
+
+

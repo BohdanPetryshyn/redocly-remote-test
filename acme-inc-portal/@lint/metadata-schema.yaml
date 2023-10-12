@@ -1,0 +1,11 @@
+type: object
+properties:
+  team:
+    type: string
+    enum:
+      - Finance
+      - Operations
+      - Marketing
+      - Product
+      - Engineering
+    description: Team responsible for the API.

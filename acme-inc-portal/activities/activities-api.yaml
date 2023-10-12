@@ -1,0 +1,86 @@
+openapi: 3.1.0
+info:
+  version: 1.0.0
+  title: Activities
+  description: Activities.
+  termsOfService: 'https://example.com/terms/'
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: Activities
+    description: Activities operations.
+servers:
+  - url: https://api.impossiblemissionsforce.com/activities
+    description: Production server
+paths:
+  /:
+    post:
+      summary: Create a new activity
+      operationId: postActivities
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                      enum:
+                        - checklist
+                        - quiz
+                      description: Type of activity to be created.
+                    name:
+                      type: string
+                    item:
+                      type: string
+                    answer:
+                      type: string
+                  required:
+                    - type
+                metadata:
+                  type: object
+                  properties:
+                    user:
+                      type: string
+                      example: abc123
+                      description: User who created the activity.
+                    domain:
+                      type: string
+                      format: uri
+                    path:
+                      type: string
+                    timestamp:
+                      type: string
+                      format: date-time
+                      example: '2023-02-19T09:31:27Z'
+                      description: Timestamp when the activity was created.
+                  required:
+                    - user
+                    - timestamp
+      responses:
+        '204':
+          description: Activity was successfully created.
+        '400':
+          description: Bad request.
+          content:
+            application/problem+json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                  title:
+                    type: string
+components:
+  securitySchemes:
+    IMF-KEY:
+      type: apiKey
+      name: IMF-KEY
+      in: header
+security:
+  - IMF-KEY: []

@@ -1,0 +1,27 @@
+.tag-deprecated {
+  background-color: var(--color-orange-6);
+}
+
+.tag-stable {
+  background-color: var(--color-lime-1);
+  color: var(--color-lime-7);
+  border-color: var(--color-lime-7);
+}
+
+.tag-beta {
+  background-color: var(--color-blue-1);
+  color: var(--color-blue-7);
+  border-color: var(--color-blue-7);
+}
+
+.tag-production, .tag-active {
+  background-color: var(--color-cyan-1);
+  color: var(--color-cyan-7);
+  border-color: var(--color-cyan-7);
+}
+
+.tag-graphql {
+  background-color: var(--color-magenta-1);
+  color: var(--color-magenta-7);
+  border-color: var(--color-magenta-7);
+}
